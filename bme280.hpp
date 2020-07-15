@@ -9,9 +9,11 @@ namespace bme280
 
 	class TBME280
 	{
-		protected:
+		public:
 			union calibration_t
 			{
+				// I have never seen a such ridiculously inconsistent data structure in my entire life. Thank you Bosch for this nonsense!
+
 				struct
 				{
 					uint8_t part1[26];
@@ -20,6 +22,7 @@ namespace bme280
 
 				struct
 				{
+					// despite the fact that the entire chip always uses big-endian format the following fields are all little endian (*facepalm*)
 					uint16_t dig_T1;
 					int16_t  dig_T2;
 					int16_t  dig_T3;
@@ -37,30 +40,33 @@ namespace bme280
 					uint8_t  __reserved0;	//	addr 0xA0 not documented in datasheet
 
 					uint8_t  dig_H1;
+
 					// -------
 					int16_t  dig_H2;
 					uint8_t  dig_H3;
-					int16_t  dig_H4;
-					int16_t  dig_H5;
-					int8_t   dig_H6;
+
+					int32_t  dig_H4 : 12,	// these two 12bit fields are in big-endian format (yey! Imagine how long it took to figure this out?)
+							 dig_H5 : 12,
+							 dig_H6 : 8;
 				} __attribute__ ((packed));
 
 				void ConvertEndianity();
 			} __attribute__ ((packed));
 
+		protected:
 			const int fd_i2cbus;
 			const uint8_t address;
 			calibration_t calibration;
-			double temperature;
-			double humidity;
-			double pressure;
 
 			void WriteRegister(const uint8_t index, const uint8_t value);
 			uint8_t ReadRegister(const uint8_t index);
 			void ReadRegister(const uint8_t index, const uint8_t n_bytes, void* const data);
 
-
 		public:
+			double temperature;
+			double humidity;
+			double pressure;
+
 			void Refresh();
 			void Reset();
 

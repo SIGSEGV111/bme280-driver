@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
 			throw "need exactly two arguments: <i2c bus device> <location>";
 
 		using namespace bme280;
-		::bme280::DEBUG = true;
+		::bme280::DEBUG = false;
 
 		TBME280 bme280(argv[1], 0x76);
 
@@ -41,8 +41,10 @@ int main(int argc, char* argv[])
 			SYSERR(gettimeofday(&ts, NULL));
 
 			SYSERR(flock(STDOUT_FILENO, LOCK_EX));
-// 			printf("%ld.%06ld;\"%s\";\"BME280\";\"LUX\";%f\n", ts.tv_sec, ts.tv_usec, argv[2], bme280.Lux());
-// 			fflush(stdout);
+			printf("%ld.%06ld;\"%s\";\"BME280\";\"temperature\";%f\n", ts.tv_sec, ts.tv_usec, argv[2], bme280.temperature);
+			printf("%ld.%06ld;\"%s\";\"BME280\";\"pressure\";%f\n", ts.tv_sec, ts.tv_usec, argv[2], bme280.pressure);
+			printf("%ld.%06ld;\"%s\";\"BME280\";\"humidity\";%f\n", ts.tv_sec, ts.tv_usec, argv[2], bme280.humidity);
+			fflush(stdout);
 			SYSERR(flock(STDOUT_FILENO, LOCK_UN));
 
 			usleep(1 * 1000 * 1000);
