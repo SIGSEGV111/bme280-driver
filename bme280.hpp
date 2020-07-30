@@ -9,6 +9,13 @@ namespace bme280
 
 	class TBME280
 	{
+		// this sensor tends to overheat... yes yes... a temperature sensor that tends to overheat... I know... don't ask
+		// maybe cool it with ice so it can't overheat, how about it?
+		// well actually it is NOT intented to be a temperature sensor, but it needs to be a temperature sensor
+		// because it it needs to know the temperature to calculate the humidty and pressure
+		// and it does A VERY POOR job at measuring the temperature, which means the temperature sensitive humidity reading
+		// is mostly useless... but it can work as a makeshift pressure sensor...
+
 		public:
 			union calibration_t
 			{

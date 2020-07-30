@@ -32,6 +32,9 @@ int main(int argc, char* argv[])
 		::bme280::DEBUG = false;
 
 		TBME280 bme280(argv[1], 0x76);
+		usleep(10 * 1000 * 1000);	// give the sensor some time to sort itself out
+		bme280.Refresh();
+
 
 		while(do_run)
 		{
@@ -42,12 +45,12 @@ int main(int argc, char* argv[])
 
 			SYSERR(flock(STDOUT_FILENO, LOCK_EX));
 			printf("%ld.%06ld;\"%s\";\"BME280\";\"temperature\";%f\n", ts.tv_sec, ts.tv_usec, argv[2], bme280.temperature);
-			printf("%ld.%06ld;\"%s\";\"BME280\";\"pressure\";%f\n", ts.tv_sec, ts.tv_usec, argv[2], bme280.pressure);
-			printf("%ld.%06ld;\"%s\";\"BME280\";\"humidity\";%f\n", ts.tv_sec, ts.tv_usec, argv[2], bme280.humidity);
+ 			printf("%ld.%06ld;\"%s\";\"BME280\";\"pressure\";%f\n", ts.tv_sec, ts.tv_usec, argv[2], bme280.pressure);
+ 			printf("%ld.%06ld;\"%s\";\"BME280\";\"humidity\";%f\n", ts.tv_sec, ts.tv_usec, argv[2], bme280.humidity);
 			fflush(stdout);
 			SYSERR(flock(STDOUT_FILENO, LOCK_UN));
 
-			usleep(1 * 1000 * 1000);
+			usleep(15 * 1000 * 1000);
 		}
 
 		fprintf(stderr,"\n[INFO] bye!\n");
